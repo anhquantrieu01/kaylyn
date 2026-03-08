@@ -15,7 +15,9 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: baseUrl,
-
+  verification: {
+    google: "ef_IQ_gGpn_L-nTqO-XzgRhKBs2Fie9PevQn8DH3aAw",
+  },
   title: {
     default: "Kaylyn Spa Pleiku | Meso, Filler, Trị Nám Gia Lai",
     template: "%s | Kaylyn Spa Pleiku",
