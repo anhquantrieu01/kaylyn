@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -136,6 +137,7 @@ export default function RootLayout({
           }}
         />
       </body>
+      <GoogleAnalytics gaId="G-DMGKVMB8ZM" />
     </html>
   );
 }
