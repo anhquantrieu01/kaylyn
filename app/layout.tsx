@@ -24,12 +24,12 @@ export const metadata: Metadata = {
     google: "ef_IQ_gGpn_L-nTqO-XzgRhKBs2Fie9PevQn8DH3aAw",
   },
   title: {
-    default: "Kaylyn Spa Pleiku | Meso, Filler, Trị Nám Gia Lai",
+    default: "Spa Pleiku Gia Lai | Kaylyn Spa | Meso, Filler, Trị Nám Gia Lai",
     template: "%s | Kaylyn Spa Pleiku",
   },
 
   description:
-    "Kaylyn Spa tại 7A Nguyễn Trãi, Phường Diên Hồng, TP Pleiku, Gia Lai. Chuyên meso căng bóng, filler môi, botox, peel da, trẻ hoá da công nghệ cao.",
+    "Kaylyn Spa tại Pleiku Gia Lai chuyên meso căng bóng, filler môi, botox, trị nám, trẻ hóa da công nghệ cao. Spa uy tín tại Pleiku.",
 
   keywords: [
     "spa Pleiku",
