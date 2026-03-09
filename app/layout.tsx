@@ -15,6 +15,11 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: baseUrl,
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
   verification: {
     google: "ef_IQ_gGpn_L-nTqO-XzgRhKBs2Fie9PevQn8DH3aAw",
   },
