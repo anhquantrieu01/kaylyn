@@ -3,7 +3,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URLURL!;
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 const TIKTOK_URL = process.env.TIKTOK_URL
 const FACEBOOK_URL = process.env.FACEBOOK_URL
 const PHONE_NUMBER = process.env.PHONE_NUMBER
@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: baseUrl,
+  metadataBase: new URL(baseUrl),
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${baseUrl}/og-image.png`,
+        url: `/og-image.png`,
         width: 1200,
         height: 630,
         alt: "Kaylyn Spa Pleiku",
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     title: "Kaylyn Spa Pleiku",
     description:
       "Spa uy tín tại Pleiku chuyên meso, filler, botox, trị nám và trẻ hoá da.",
-    images: [`${baseUrl}/og-image.png`],
+    images: [`/og-image.png`],
   },
 };
 
