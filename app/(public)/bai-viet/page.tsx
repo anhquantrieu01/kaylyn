@@ -1,182 +1,169 @@
-import { prisma } from "@/lib/prisma"
-import Image from "next/image"
-import Link from "next/link"
-import type { Metadata } from "next"
+import { prisma } from "@/lib/prisma";
+import Image from "next/image";
+import Link from "next/link";
+import type { Metadata } from "next";
+import {
+  Sparkles,
+} from "lucide-react";
 
-export const revalidate = 604800;
+import Pagination from "@/components/Pagination";
 
+export const revalidate = 60;
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+const PAGE_SIZE = 6;
 
 export const metadata: Metadata = {
   title: "Blog làm đẹp Pleiku | Kaylyn Spa",
   description:
-    "Chia sẻ kiến thức chăm sóc da, trị nám, meso căng bóng, filler môi và các xu hướng làm đẹp mới nhất tại Pleiku Gia Lai.",
+    "Chia sẻ kiến thức chăm sóc da, trị nám, meso căng bóng, filler môi tại Pleiku Gia Lai.",
   alternates: {
-    canonical: `${baseUrl}/bai-viet`
+    canonical: `${baseUrl}/bai-viet`,
   },
-  openGraph: {
-    title: "Blog làm đẹp Pleiku | Kaylyn Spa",
-    description:
-      "Cập nhật kiến thức chăm sóc da, meso, filler và trị nám mới nhất.",
-    url: `${baseUrl}/bai-viet`,
-    siteName: "Kaylyn Spa",
-    locale: "vi_VN",
-    type: "website"
-  }
-}
+};
 
-export default async function BlogPage() {
+type Props = {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+};
 
-  const posts = await prisma.post.findMany({
-    where: {
-      published: true
-    },
-    orderBy: {
-      createdAt: "desc"
-    }
-  })
+export default async function BlogPage({
+  searchParams,
+}: Props) {
 
-  const featured = posts[0]
-  const restPosts = posts.slice(1)
+
+  const params = await searchParams;
+  const page = Math.max(
+    1,
+    Number(params?.page ?? 1) || 1
+  );
+  const skip = (page - 1) * PAGE_SIZE;
+
+  const [totalPosts, posts] = await Promise.all([
+    prisma.post.count({
+      where: { published: true },
+    }),
+
+    prisma.post.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: PAGE_SIZE,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(
+    totalPosts / PAGE_SIZE
+  );
+
+  const featured = page === 1 ? posts[0] : null;
+  const restPosts = featured
+    ? posts.slice(1)
+    : posts;
 
   return (
+    <main className="bg-linear-to-b from-pink-50 via-white to-white min-h-screen">
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(244,114,182,0.15),transparent_60%)]" />
 
-    <section className="max-w-6xl mx-auto px-4 py-12">
-
-
-      <header className="mb-14 text-center">
-
-        <h1 className="text-4xl font-bold mb-4">
-          Blog làm đẹp
-        </h1>
-
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Khám phá bí quyết chăm sóc da, điều trị nám, meso căng bóng và các
-          xu hướng làm đẹp mới nhất tại Pleiku Gia Lai.
-        </p>
-
-      </header>
-
-
-
-      {featured && (
-
-        <Link href={`/bai-viet/${featured.slug}`}>
-
-          <article className="group mb-14 grid md:grid-cols-2 gap-8 items-center border rounded-2xl overflow-hidden hover:shadow-xl transition bg-white">
-
-            {featured.thumbnail && (
-
-              <div className="overflow-hidden">
-
-                <Image
-                  src={featured.thumbnail}
-                  alt={featured.title}
-                  width={600}
-                  height={400}
-                  priority
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                />
-
-              </div>
-
-            )}
-
-            <div className="p-6">
-
-              <p className="text-sm text-pink-500 font-medium mb-2">
-                Bài viết nổi bật
-              </p>
-
-              <h2 className="text-2xl font-bold mb-4 group-hover:text-pink-600 transition">
-                {featured.title}
-              </h2>
-
-              <p className="text-gray-600 mb-4 line-clamp-3">
-                {featured.excerpt}
-              </p>
-
-              <time
-                dateTime={featured.createdAt.toISOString()}
-                className="text-sm text-gray-400"
-              >
-                {new Date(featured.createdAt).toLocaleDateString("vi-VN")}
-              </time>
-
-              <div className="mt-4 text-pink-600 font-medium">
-                Đọc bài viết
-              </div>
-
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-16 md:py-24 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 bg-pink-100 text-pink-600 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <Sparkles className="w-4 h-4" />
+              Beauty Blog
             </div>
 
-          </article>
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              Blog làm đẹp
+              <span className="block text-pink-500">
+                Kaylyn Spa
+              </span>
+            </h1>
+          </div>
+        </div>
+      </section>
 
-        </Link>
-
-      )}
-
-
-
-
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
-        {restPosts.map((post) => (
-
-          <Link key={post.id} href={`/bai-viet/${post.slug}`}>
-
-            <article className="group bg-white border rounded-2xl overflow-hidden hover:shadow-xl transition duration-300">
-
-              {post.thumbnail && (
-
-                <div className="overflow-hidden">
-
+      {/* CONTENT */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-20">
+        {/* FEATURED (chỉ page 1) */}
+        {featured && (
+          <Link
+            href={`/bai-viet/${featured.slug}`}
+            className="block mb-16"
+          >
+            <article className="grid lg:grid-cols-2 bg-white rounded-4xl overflow-hidden border border-pink-100 shadow-sm hover:shadow-xl transition">
+              {featured.thumbnail && (
+                <div className="relative h-80">
                   <Image
-                    src={post.thumbnail}
-                    alt={post.title}
-                    width={400}
-                    height={300}
-                    loading="lazy"
-                    className="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
+                    src={featured.thumbnail}
+                    alt={featured.title}
+                    fill
+                    className="object-cover"
+                    priority
                   />
-
                 </div>
-
               )}
 
-              <div className="p-5">
-
-                <time
-                  dateTime={post.createdAt.toISOString()}
-                  className="text-sm text-gray-400 mb-2 block"
-                >
-                  {new Date(post.createdAt).toLocaleDateString("vi-VN")}
-                </time>
-
-                <h2 className="font-semibold text-lg mb-3 group-hover:text-pink-600 transition">
-                  {post.title}
+              <div className="p-8 flex flex-col justify-center">
+                <h2 className="text-3xl font-bold mb-4 leading-7 line-clamp-2 group-hover:text-pink-600">
+                  {featured.title}
                 </h2>
 
-                <p className="text-gray-600 text-sm line-clamp-3">
-                  {post.excerpt}
+                <p className="text-gray-600 line-clamp-3">
+                  {featured.excerpt}
                 </p>
-
-                <div className="mt-4 text-sm font-medium text-pink-600">
-                  Xem chi tiết
-                </div>
-
               </div>
-
             </article>
-
           </Link>
+        )}
 
-        ))}
+        {/* POSTS */}
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
+          {restPosts.map((post) => (
+            <Link
+              key={post.id}
+              href={`/bai-viet/${post.slug}`}
+              className="group"
+            >
+              <article className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition">
+                {post.thumbnail && (
+                  <div className="relative h-60">
+                    <Image
+                      src={post.thumbnail}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition"
+                    />
+                  </div>
+                )}
 
-      </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold group-hover:text-pink-600 leading-7 line-clamp-2">
+                    {post.title}
+                  </h3>
 
-    </section>
+                  <p className="text-gray-600 text-sm mt-3 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                </div>
+              </article>
+            </Link>
+          ))}
+        </div>
 
-  )
+        {/* EMPTY */}
+        {posts.length === 0 && (
+          <div className="text-center py-20 text-gray-400">
+            Chưa có bài viết nào
+          </div>
+        )}
 
+        {/* PAGINATION COMPONENT */}
+        <Pagination totalPages={totalPages} />
+      </section>
+    </main>
+  );
 }
