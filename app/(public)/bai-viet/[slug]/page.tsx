@@ -13,7 +13,7 @@ import {
 const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL;
 
-export const revalidate = 604800;
+// export const revalidate = 604800;
 
 export async function generateMetadata({
   params,
@@ -107,16 +107,16 @@ export async function generateMetadata({
   };
 }
 
-export async function generateStaticParams() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
+// export async function generateStaticParams() {
+//   const posts = await prisma.post.findMany({
+//     where: { published: true },
+//     select: { slug: true },
+//   });
 
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+//   return posts.map((post) => ({
+//     slug: post.slug,
+//   }));
+// }
 
 export default async function Page({
   params,
